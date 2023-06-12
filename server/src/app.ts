@@ -3,6 +3,7 @@ import "./types";
 import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
+import pino from "pino-http";
 
 import authRoutes from "./routes/auth";
 import assetsRoutes from "./routes/assets";
@@ -15,6 +16,7 @@ const port = process.env.PORT || 4000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(pino());
 
 app.use(authRoutes);
 
@@ -26,7 +28,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  res.status(500).json({ error: err });
+  req.log.error(err);
+  return res.status(500).json({ error: "Internal server error" });
 });
 
 mongoose
