@@ -5,7 +5,7 @@ import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 
 import authRoutes from "./routes/auth";
-import homeRoutes from "./routes/home";
+import assetsRoutes from "./routes/assets";
 import { authMiddleware } from "./middleware/auth";
 
 const app = express();
@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(authRoutes);
 app.use(authMiddleware);
 // protected routes
-app.use(homeRoutes);
+app.use("/assets", assetsRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.sendStatus(404);

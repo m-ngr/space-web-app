@@ -57,6 +57,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
       maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
     });
 
+    req.user = user;
     return res.json({ message: "login success" });
   } catch (error) {
     next(error);

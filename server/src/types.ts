@@ -1,10 +1,13 @@
+import { Document } from "mongoose";
+
 export interface JwtObject {
   userID: string;
 }
 
-export interface IUser {
+export interface IUser extends Document {
   username: string;
   password: string;
+  assets: string[];
 }
 
 declare global {
@@ -16,10 +19,7 @@ declare global {
 }
 
 export interface INasaAsset {
-  href: string;
-  media_link: string;
-  title: string;
-  media_type: string;
-  description: string;
-  nasa_id: string;
+  id: string;
+  liked: boolean;
+  url: string;
 }
