@@ -35,11 +35,17 @@ async function convertAssets(json) {
     if (!response.ok) return;
 
     const { title, media_type, description, nasa_id } = item.data[0];
-    const collection = await response.json();
+    const collection: string[] = await response.json();
+
+    let media_url = collection.find((url) => url.includes("~orig")) ?? "";
+    if (media_url === "") {
+      const ext = media_type === "video" ? ".mp4" : ".jpg";
+      media_url = collection.find((url) => url.includes(ext)) ?? "";
+    }
 
     result.push({
-      href: item.href,
-      media_link: collection[0],
+      collection_url: item.href,
+      media_url,
       title,
       media_type,
       description,
