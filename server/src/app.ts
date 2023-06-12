@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 
 import authRoutes from "./routes/auth";
+import homeRoutes from "./routes/home";
 import { authMiddleware } from "./middleware/auth";
 
 const app = express();
@@ -17,10 +18,7 @@ app.use(cookieParser());
 app.use(authRoutes);
 app.use(authMiddleware);
 // protected routes
-app.get("/", (req, res) => {
-  //TEST: TO BE DELETED
-  res.json({ username: req.user?.username });
-});
+app.use(homeRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.sendStatus(404);

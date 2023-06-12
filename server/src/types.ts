@@ -14,3 +14,12 @@ declare global {
     }
   }
 }
+
+export interface INasaAsset {
+  href: string;
+  media_link: string;
+  title: string;
+  media_type: string;
+  description: string;
+  nasa_id: string;
+}
