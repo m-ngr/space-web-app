@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 
 import authRoutes from "./routes/auth";
 import assetsRoutes from "./routes/assets";
+import profileRoutes from "./routes/profile";
 import { authMiddleware } from "./middleware/auth";
 
 const app = express();
@@ -16,9 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(authRoutes);
-app.use(authMiddleware);
-// protected routes
-app.use("/assets", assetsRoutes);
+
+app.use("/assets", authMiddleware, assetsRoutes);
+app.use("/profile", authMiddleware, profileRoutes);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.sendStatus(404);
