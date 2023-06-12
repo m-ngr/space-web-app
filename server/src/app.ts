@@ -1,7 +1,11 @@
 require("dotenv").config();
+import "./types";
 import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
+
+import authRoutes from "./routes/auth";
+import { authMiddleware } from "./middleware/auth";
 
 const app = express();
 const port = process.env.PORT || 4000;
@@ -9,6 +13,18 @@ const port = process.env.PORT || 4000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.use(authRoutes);
+app.use(authMiddleware);
+// protected routes
+app.get("/", (req, res) => {
+  //TEST: TO BE DELETED
+  res.json({ username: req.user?.username });
+});
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.sendStatus(404);
+});
 
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   res.status(500).json({ error: err });
