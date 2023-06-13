@@ -1,4 +1,4 @@
-import { useState, FormEvent, useContext } from "react";
+import { useState, FormEvent, useContext, useEffect } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import { TextField } from "@mui/material";
@@ -19,7 +19,9 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  if (user) navigate("/");
+  useEffect(() => {
+    if (user) navigate("/");
+  }, [navigate, user]);
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);

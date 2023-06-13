@@ -12,23 +12,26 @@ import { UserContext } from "../contexts/UserContext";
 
 const defaultTheme = createTheme();
 
-export default function Signup() {
+export default function Profile() {
   const { user } = useContext(UserContext)!;
-  const [username, setUsername] = useState("");
+
+  const [username, setUsername] = useState(user!);
   const [password, setPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [oldPasswordError, setOldPasswordError] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) navigate("/");
+    if (!user) navigate("/login");
   }, [navigate, user]);
 
   const handleUsernameChange = (event) => {
     const { value } = event.target;
     setUsername(value);
     const usernameRegex = /^[a-zA-Z0-9._-]{3,20}$/;
-    if (usernameRegex.test(value)) {
+    if (!value || usernameRegex.test(value)) {
       setUsernameError("");
     } else {
       setUsernameError(
@@ -37,13 +40,18 @@ export default function Signup() {
     }
   };
 
+  const handleOldPasswordChange = (event) => {
+    setOldPassword(event.target.value);
+    setOldPasswordError("");
+  };
+
   const handlePasswordChange = (event) => {
     const { value } = event.target;
     setPassword(value);
     const passwordRegex =
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,50}$/;
 
-    if (passwordRegex.test(value)) {
+    if (!value || passwordRegex.test(value)) {
       setPasswordError("");
     } else {
       setPasswordError(
@@ -52,17 +60,19 @@ export default function Signup() {
     }
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleUpdate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    let changed = false;
+    if (username !== "" && username !== user) changed = true;
+    if (password !== "" && oldPassword !== "") changed = true;
+    if (!changed) return;
+    if (usernameError || passwordError || oldPasswordError) return;
 
-    if (username.trim() === "") setUsernameError("Username is required");
-    if (password.trim() === "") setPasswordError("Password is required");
-    if (usernameError || passwordError) return;
-
-    const response = await fetch("http://localhost:4000/signup", {
-      method: "POST",
+    const response = await fetch("http://localhost:4000/profile", {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password, oldPassword }),
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -70,9 +80,21 @@ export default function Signup() {
       json.errors.forEach((err) => {
         if (err.path === "username") setUsernameError(err.msg);
         if (err.path === "password") setPasswordError(err.msg);
+        if (err.path === "oldPassword") setOldPasswordError(err.msg);
       });
       return;
     }
+
+    setUsername("");
+    setOldPassword("");
+    setPassword("");
+  };
+
+  const handleDelete = async (event) => {
+    await fetch("http://localhost:4000/profile", {
+      method: "DELETE",
+      credentials: "include",
+    });
 
     return navigate("/login");
   };
@@ -90,12 +112,12 @@ export default function Signup() {
           }}
         >
           <Typography component="h2" variant="h5">
-            Sign up
+            Edit Profile
           </Typography>
           <Box
             component="form"
             noValidate
-            onSubmit={handleSubmit}
+            onSubmit={handleUpdate}
             sx={{ mt: 3 }}
           >
             <Grid container spacing={2}>
@@ -125,7 +147,31 @@ export default function Signup() {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  label="Password"
+                  label="Old Password"
+                  type="password"
+                  id="oldPassword"
+                  autoComplete="oldPassword"
+                  name="oldPassword"
+                  required
+                  fullWidth
+                  value={oldPassword}
+                  onChange={handleOldPasswordChange}
+                  error={Boolean(oldPasswordError)}
+                  helperText={oldPasswordError}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <span role="img" aria-label="checkmark">
+                          {oldPasswordError ? "❌" : "✅"}
+                        </span>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="New Password"
                   type="password"
                   id="password"
                   autoComplete="password"
@@ -154,9 +200,19 @@ export default function Signup() {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign up
+              Update Info
             </Button>
           </Box>
+          <Button
+            type="submit"
+            color="error"
+            fullWidth
+            variant="contained"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleDelete}
+          >
+            Delete Account
+          </Button>
         </Box>
       </Container>
     </ThemeProvider>

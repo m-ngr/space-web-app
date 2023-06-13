@@ -34,6 +34,14 @@ export default function NavBar() {
       <Button color="inherit" component={RouterLink} to="/" key="home">
         Search
       </Button>,
+      <Button
+        color="inherit"
+        component={RouterLink}
+        to="favourites"
+        key="myfavs"
+      >
+        My Favs
+      </Button>,
       <Button color="inherit" component={RouterLink} to="profile" key="profile">
         Profile
       </Button>,

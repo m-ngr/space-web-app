@@ -10,14 +10,14 @@ export function readUserInfo(req: Request, res: Response) {
 
 export const updateUser = [
   body("username")
-    .optional({ values: "null" })
+    .optional({ values: "falsy" })
     .trim()
     .matches(/^[a-zA-Z0-9._-]{3,20}$/)
     .withMessage(
       "Username must be between 3 and 20 characters and can only contain alphanumeric characters, dots, dashes, and underscores"
     ),
   body("password")
-    .optional({ values: "null" })
+    .optional({ values: "falsy" })
     .trim()
     .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,50}$/)
     .withMessage(
@@ -51,7 +51,9 @@ export const updateUser = [
           req.user!.password = hash;
           changed = true;
         } else {
-          return res.status(400).json({ error: "Incorrect old password" });
+          return res.status(400).json({
+            errors: [{ msg: "Incorrect old password", path: "oldPassword" }],
+          });
         }
       }
 
