@@ -29,7 +29,7 @@ export default function App() {
 
   return (
     <UserContextProvider>
-      <RouterProvider router={router} />;
+      <RouterProvider router={router} />
     </UserContextProvider>
   );
 }

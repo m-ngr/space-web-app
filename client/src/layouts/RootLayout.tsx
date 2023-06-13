@@ -15,9 +15,20 @@ const RootLayout = () => {
   }, [setUser]);
 
   return (
-    <Paper elevation={0} sx={{ minHeight: "100vh" }}>
+    <Paper
+      elevation={0}
+      sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+    >
       <NavBar />
-      <Container maxWidth="xl" sx={{ paddingY: "10px" }}>
+      <Container
+        maxWidth="xl"
+        sx={{
+          paddingY: "10px",
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
         <Outlet />
       </Container>
     </Paper>

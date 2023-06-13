@@ -60,6 +60,7 @@ export default function Favourites() {
         flexDirection: "column",
         alignItems: "center",
         marginTop: "20px",
+        flexGrow: 1,
       }}
     >
       <Typography component="h2" variant="h4">
@@ -69,12 +70,13 @@ export default function Favourites() {
       {!pageError && <AssetList assets={assets} onLike={handleOnLike} />}
 
       {pageError && (
-        <Typography color="error" sx={{ paddingY: "200px" }}>
+        <Typography color="error" sx={{ paddingY: "200px", flexGrow: 1 }}>
           {pageError}
         </Typography>
       )}
 
       <Pagination
+        sx={{ marginTop: "auto", paddingY: "20px" }}
         variant="outlined"
         shape="rounded"
         color="primary"

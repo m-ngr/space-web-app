@@ -58,7 +58,7 @@ export default function Home() {
         flexDirection: "column",
         alignItems: "center",
         marginTop: "20px",
-        minHeight: "500px",
+        flexGrow: 1,
       }}
     >
       <SearchBar
@@ -76,7 +76,7 @@ export default function Home() {
       )}
 
       <Pagination
-        sx={{ marginTop: "auto", paddingBottom: "20px" }}
+        sx={{ marginTop: "auto", paddingY: "20px" }}
         variant="outlined"
         shape="rounded"
         color="primary"
