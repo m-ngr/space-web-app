@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useContext } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import { TextField, InputAdornment } from "@mui/material";
@@ -8,15 +8,19 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
 
 const defaultTheme = createTheme();
 
 export default function Signup() {
+  const { user } = useContext(UserContext)!;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const navigate = useNavigate();
+
+  if (user) navigate("/");
 
   const handleUsernameChange = (event) => {
     const { value } = event.target;

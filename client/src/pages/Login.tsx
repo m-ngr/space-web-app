@@ -1,4 +1,4 @@
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useContext } from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import { TextField } from "@mui/material";
@@ -8,14 +8,18 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
 
 const defaultTheme = createTheme();
 
 export default function Login() {
+  const { user, setUser } = useContext(UserContext)!;
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  if (user) navigate("/");
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -38,6 +42,7 @@ export default function Login() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
+      credentials: "include",
     });
 
     if (!response.ok) {
@@ -46,6 +51,7 @@ export default function Login() {
       return;
     }
 
+    setUser(username);
     return navigate("/");
   };
 
