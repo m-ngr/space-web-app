@@ -6,14 +6,11 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 
-const defaultTheme = createTheme();
-
 export default function Profile() {
-  const { user } = useContext(UserContext)!;
+  const { user, setUser } = useContext(UserContext)!;
 
   const [username, setUsername] = useState(user!);
   const [password, setPassword] = useState("");
@@ -21,6 +18,7 @@ export default function Profile() {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [oldPasswordError, setOldPasswordError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -85,9 +83,10 @@ export default function Profile() {
       return;
     }
 
-    setUsername("");
+    if (username !== "" && username !== user) setUser(username);
     setOldPassword("");
     setPassword("");
+    setSuccessMessage("User info updated successfully");
   };
 
   const handleDelete = async (event) => {
@@ -100,121 +99,126 @@ export default function Profile() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="sm">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography component="h2" variant="h5">
-            Edit Profile
+    <Container component="main" maxWidth="sm">
+      <CssBaseline />
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <Typography component="h2" variant="h5">
+          Hi{" "}
+          <Typography component="span" variant="h5" color="primary">
+            {user}
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleUpdate}
-            sx={{ mt: 3 }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Username"
-                  id="username"
-                  autoComplete="username"
-                  name="username"
-                  fullWidth
-                  required
-                  autoFocus
-                  value={username}
-                  onChange={handleUsernameChange}
-                  error={Boolean(usernameError)}
-                  helperText={usernameError}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <span role="img" aria-label="checkmark">
-                          {usernameError ? "❌" : "✅"}
-                        </span>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Old Password"
-                  type="password"
-                  id="oldPassword"
-                  autoComplete="oldPassword"
-                  name="oldPassword"
-                  required
-                  fullWidth
-                  value={oldPassword}
-                  onChange={handleOldPasswordChange}
-                  error={Boolean(oldPasswordError)}
-                  helperText={oldPasswordError}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <span role="img" aria-label="checkmark">
-                          {oldPasswordError ? "❌" : "✅"}
-                        </span>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="New Password"
-                  type="password"
-                  id="password"
-                  autoComplete="password"
-                  name="password"
-                  required
-                  fullWidth
-                  value={password}
-                  onChange={handlePasswordChange}
-                  error={Boolean(passwordError)}
-                  helperText={passwordError}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <span role="img" aria-label="checkmark">
-                          {passwordError ? "❌" : "✅"}
-                        </span>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
+          , Edit your profile
+        </Typography>
+
+        <Box component="form" noValidate onSubmit={handleUpdate} sx={{ mt: 3 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              {successMessage && (
+                <Typography color="primary" align="center">
+                  {successMessage}
+                </Typography>
+              )}
             </Grid>
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Update Info
-            </Button>
-          </Box>
+            <Grid item xs={12}>
+              <TextField
+                label="Username"
+                id="username"
+                autoComplete="username"
+                name="username"
+                fullWidth
+                required
+                autoFocus
+                value={username}
+                onChange={handleUsernameChange}
+                error={Boolean(usernameError)}
+                helperText={usernameError}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <span role="img" aria-label="checkmark">
+                        {usernameError ? "❌" : "✅"}
+                      </span>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Old Password"
+                type="password"
+                id="oldPassword"
+                autoComplete="oldPassword"
+                name="oldPassword"
+                required
+                fullWidth
+                value={oldPassword}
+                onChange={handleOldPasswordChange}
+                error={Boolean(oldPasswordError)}
+                helperText={oldPasswordError}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <span role="img" aria-label="checkmark">
+                        {oldPasswordError ? "❌" : "✅"}
+                      </span>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="New Password"
+                type="password"
+                id="password"
+                autoComplete="password"
+                name="password"
+                required
+                fullWidth
+                value={password}
+                onChange={handlePasswordChange}
+                error={Boolean(passwordError)}
+                helperText={passwordError}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <span role="img" aria-label="checkmark">
+                        {passwordError ? "❌" : "✅"}
+                      </span>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+            </Grid>
+          </Grid>
           <Button
             type="submit"
-            color="error"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={handleDelete}
           >
-            Delete Account
+            Update Info
           </Button>
         </Box>
-      </Container>
-    </ThemeProvider>
+        <Button
+          type="submit"
+          color="error"
+          fullWidth
+          variant="contained"
+          sx={{ mt: 3, mb: 2 }}
+          onClick={handleDelete}
+        >
+          Delete Account
+        </Button>
+      </Box>
+    </Container>
   );
 }

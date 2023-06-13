@@ -7,29 +7,49 @@ import { UserContext } from "../contexts/UserContext";
 export default function Favourites() {
   const { user } = useContext(UserContext)!;
   const navigate = useNavigate();
+
   const [assets, setAssets] = useState<any[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(3);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageError, setPageError] = useState("");
 
   useEffect(() => {
     if (!user) navigate("/login");
   }, [navigate, user]);
 
   useEffect(() => {
-    fetch(
-      `http://localhost:4000/assets/liked?page=${currentPage}&page_size=12`,
-      {
-        credentials: "include",
+    const fetchFavs = async () => {
+      const response = await fetch(
+        `http://localhost:4000/assets/liked?page=${currentPage}&page_size=12`,
+        {
+          credentials: "include",
+        }
+      );
+
+      if (response.ok) {
+        setAssets(await response.json());
+        setTotalPages(currentPage + 1);
+        setPageError("");
+      } else {
+        setAssets([]);
+        setTotalPages(currentPage);
+        setPageError(
+          currentPage === 1
+            ? "No Fav Assets to view"
+            : "No More Fav Assets to view"
+        );
       }
-    )
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data) => setAssets(data))
-      .then(() => setTotalPages(currentPage + 1))
-      .catch(() => setTotalPages(currentPage));
+    };
+
+    fetchFavs();
   }, [currentPage]);
 
   const handlePageChange = async (event, page) => {
     setCurrentPage(page);
+  };
+
+  const handleOnLike = (id) => {
+    setAssets(assets.filter((item) => item.id !== id));
   };
 
   return (
@@ -46,18 +66,22 @@ export default function Favourites() {
         My Favourite Assets
       </Typography>
 
-      <AssetList assets={assets} />
+      {!pageError && <AssetList assets={assets} onLike={handleOnLike} />}
 
-      {Boolean(assets.length) && (
-        <Pagination
-          variant="outlined"
-          shape="rounded"
-          color="primary"
-          count={totalPages}
-          page={currentPage}
-          onChange={handlePageChange}
-        />
+      {pageError && (
+        <Typography color="error" sx={{ paddingY: "200px" }}>
+          {pageError}
+        </Typography>
       )}
+
+      <Pagination
+        variant="outlined"
+        shape="rounded"
+        color="primary"
+        count={totalPages}
+        page={currentPage}
+        onChange={handlePageChange}
+      />
     </Paper>
   );
 }

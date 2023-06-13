@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import SearchBar from "../components/SearchBar";
 import AssetList from "../components/AssetList";
-import { Pagination, Paper } from "@mui/material";
+import { Pagination, Paper, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 
@@ -11,39 +11,42 @@ export default function Home() {
   const [assets, setAssets] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(3);
+  const [totalPages, setTotalPages] = useState(1);
+  const [pageError, setPageError] = useState("");
 
   useEffect(() => {
     if (!user) navigate("/login");
   }, [navigate, user]);
 
-  const fetchAssets = (page: number) => {
+  const fetchAssets = async (page: number) => {
     if (searchTerm === "") return;
-    return fetch(
+    const response = await fetch(
       `http://localhost:4000/assets/search?q=${searchTerm}&page=${page}&page_size=12`,
       {
         credentials: "include",
       }
-    )
-      .then((res) => res.json())
-      .then((data) => setAssets(data))
-      .then(() => true)
-      .catch(() => false);
+    );
+
+    const json = await response.json();
+
+    if (response.ok && json.length) {
+      setAssets(json);
+      setTotalPages(page + 1);
+      setPageError("");
+    } else {
+      setAssets([]);
+      setTotalPages(page);
+      setPageError(page === 1 ? "No Assets to view" : "No More Assets to view");
+    }
   };
 
-  const handlePageChange = async (event, page) => {
+  const handlePageChange = (event, page) => {
     setCurrentPage(page);
-    const hasAssets = await fetchAssets(page);
-    if (hasAssets) {
-      setTotalPages(page + 1);
-    } else {
-      setTotalPages(page);
-    }
+    fetchAssets(page);
   };
 
   const handleSearch = () => {
     setCurrentPage(1);
-    setTotalPages(3);
     fetchAssets(1);
   };
 
@@ -55,6 +58,7 @@ export default function Home() {
         flexDirection: "column",
         alignItems: "center",
         marginTop: "20px",
+        minHeight: "500px",
       }}
     >
       <SearchBar
@@ -63,18 +67,23 @@ export default function Home() {
         setSearchTerm={setSearchTerm}
       />
 
-      <AssetList assets={assets} />
+      {!pageError && <AssetList assets={assets} onLike={null} />}
 
-      {Boolean(assets.length) && (
-        <Pagination
-          variant="outlined"
-          shape="rounded"
-          color="primary"
-          count={totalPages}
-          page={currentPage}
-          onChange={handlePageChange}
-        />
+      {pageError && (
+        <Typography color="error" sx={{ paddingY: "200px" }}>
+          {pageError}
+        </Typography>
       )}
+
+      <Pagination
+        sx={{ marginTop: "auto", paddingBottom: "20px" }}
+        variant="outlined"
+        shape="rounded"
+        color="primary"
+        count={totalPages}
+        page={currentPage}
+        onChange={handlePageChange}
+      />
     </Paper>
   );
 }
