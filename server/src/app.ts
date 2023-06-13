@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(pino());
-app.use(cors({ origin: "http://localhost:3000" })); // TODO: Replace with frontend URL at Deployment
+app.use(cors({ origin: "http://localhost:3000", credentials: true })); // TODO: Replace with frontend URL at Deployment
 
 app.use(authRoutes);
 
