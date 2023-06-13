@@ -4,6 +4,7 @@ import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 import pino from "pino-http";
+import cors from "cors";
 
 import authRoutes from "./routes/auth";
 import assetsRoutes from "./routes/assets";
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(pino());
+app.use(cors({ origin: "http://localhost:3000" })); // TODO: Replace with frontend URL at Deployment
 
 app.use(authRoutes);
 
