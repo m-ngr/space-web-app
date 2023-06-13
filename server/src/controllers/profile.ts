@@ -12,20 +12,16 @@ export const updateUser = [
   body("username")
     .optional({ values: "null" })
     .trim()
-    .isLength({ min: 3, max: 20 })
-    .withMessage("Username must be between 3 and 20 characters long")
-    .matches(/^[a-zA-Z0-9._-]+$/)
+    .matches(/^[a-zA-Z0-9._-]{3,20}$/)
     .withMessage(
-      "Username can only contain alphanumeric characters, dots, dashs, and underscores"
+      "Username must be between 3 and 20 characters and can only contain alphanumeric characters, dots, dashes, and underscores"
     ),
   body("password")
     .optional({ values: "null" })
     .trim()
-    .isLength({ min: 8, max: 50 })
-    .withMessage("Password must be between 8 and 50 characters long")
-    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).+$/)
+    .matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,50}$/)
     .withMessage(
-      "Password must be at least one upper case English letter, one lower case English letter, one number and one special character"
+      "Password must be between 8 and 50 characters, contain one uppercase letter, one lowercase letter, one number, and one special character"
     ),
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -41,7 +37,9 @@ export const updateUser = [
       if (username && username !== req.user!.username) {
         const existing = await User.findOne({ username });
         if (existing) {
-          return res.status(400).json({ error: "Username already exists" });
+          return res.status(400).json({
+            errors: [{ msg: "Username already exists", path: "username" }],
+          });
         }
         req.user!.username = username;
         changed = true;
