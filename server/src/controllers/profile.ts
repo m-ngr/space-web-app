@@ -62,7 +62,7 @@ export const updateUser = [
         return res.json({ message: "User updated successfully" });
       }
 
-      return res.status(201).json({ message: "No action" }); // should be error?
+      return res.sendStatus(201); // no action
     } catch (error) {
       next(error);
     }
@@ -80,8 +80,7 @@ export async function deleteUser(
     res.clearCookie("token");
 
     if (!deletedUser) {
-      // TODO search for suitable status code
-      return res.status(400).json({ error: "User not found" });
+      return res.status(409).json({ error: "Conflict - User not found" });
     }
 
     return res.json({ message: "User deleted successfully" });
