@@ -33,8 +33,9 @@ npm run dev-server
 npm run start-client
 ```
 
-**NOTE**
+**NOTES**
 
+- nodemon package is required for development.
 - The server runs on port 4000 by default
 - The client runs on port 3000 by default
 
