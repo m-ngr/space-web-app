@@ -95,6 +95,7 @@ export default function Profile() {
       credentials: "include",
     });
 
+    setUser(null);
     return navigate("/login");
   };
 
