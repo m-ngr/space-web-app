@@ -52,6 +52,8 @@ export async function login(req: Request, res: Response, next: NextFunction) {
 
     res.cookie("token", jwtSign({ userID: user.id }), {
       httpOnly: true,
+      secure: true,
+      sameSite: "strict",
       maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
     });
 

@@ -12,12 +12,12 @@ export default function NavBar() {
   const navigate = useNavigate();
 
   function logout() {
-    fetch("http://localhost:4000/logout", { credentials: "include" }).finally(
-      () => {
-        setUser(null);
-        navigate("login");
-      }
-    );
+    fetch("https://server-space.onrender.com/logout", {
+      credentials: "include",
+    }).finally(() => {
+      setUser(null);
+      navigate("login");
+    });
   }
 
   let NavButtons = [

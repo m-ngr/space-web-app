@@ -14,7 +14,7 @@ const Asset = ({ asset, onLike }) => {
     const method = like ? "DELETE" : "POST";
     if (onLike) onLike(id, !like);
     setLike(!like);
-    fetch(`http://localhost:4000/assets/${id}`, {
+    fetch(`https://server-space.onrender.com/assets/${id}`, {
       method,
       credentials: "include",
     });

@@ -66,7 +66,7 @@ export default function Profile() {
     if (!changed) return;
     if (usernameError || passwordError || oldPasswordError) return;
 
-    const response = await fetch("http://localhost:4000/profile", {
+    const response = await fetch("https://server-space.onrender.com/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password, oldPassword }),
@@ -90,7 +90,7 @@ export default function Profile() {
   };
 
   const handleDelete = async (event) => {
-    await fetch("http://localhost:4000/profile", {
+    await fetch("https://server-space.onrender.com/profile", {
       method: "DELETE",
       credentials: "include",
     });

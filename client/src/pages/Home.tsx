@@ -21,7 +21,7 @@ export default function Home() {
   const fetchAssets = async (page: number) => {
     if (searchTerm === "") return;
     const response = await fetch(
-      `http://localhost:4000/assets/search?q=${searchTerm}&page=${page}&page_size=12`,
+      `https://server-space.onrender.com/assets/search?q=${searchTerm}&page=${page}&page_size=12`,
       {
         credentials: "include",
       }

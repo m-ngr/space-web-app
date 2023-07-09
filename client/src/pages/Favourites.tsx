@@ -20,7 +20,7 @@ export default function Favourites() {
   useEffect(() => {
     const fetchFavs = async () => {
       const response = await fetch(
-        `http://localhost:4000/assets/liked?page=${currentPage}&page_size=12`,
+        `https://server-space.onrender.com/assets/liked?page=${currentPage}&page_size=12`,
         {
           credentials: "include",
         }

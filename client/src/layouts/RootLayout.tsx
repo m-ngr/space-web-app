@@ -8,7 +8,9 @@ const RootLayout = () => {
   const { setUser } = useContext(UserContext)!;
 
   useEffect(() => {
-    fetch("http://localhost:4000/profile", { credentials: "include" })
+    fetch("https://server-space.onrender.com/profile", {
+      credentials: "include",
+    })
       .then((res) => res.json())
       .then((data) => setUser(data.username))
       .catch(() => setUser(null));
