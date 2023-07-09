@@ -1,7 +1,4 @@
 require("dotenv").config();
-import fetch from "node-fetch";
-globalThis.fetch = fetch as any;
-
 import "./types";
 import express, { NextFunction, Request, Response } from "express";
 import cookieParser from "cookie-parser";
