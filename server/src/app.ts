@@ -18,8 +18,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(pino());
-app.use(cors({ origin: "https://nasa-space.onrender.com", credentials: true }));
-
+if (process.env.NODE_ENV === "production") {
+  app.use(
+    cors({ origin: "https://nasa-space.onrender.com", credentials: true })
+  );
+} else {
+  app.use(cors({ origin: "http://localhost:8080", credentials: true }));
+}
 app.use(authRoutes);
 
 app.use("/assets", authMiddleware, assetsRoutes);
